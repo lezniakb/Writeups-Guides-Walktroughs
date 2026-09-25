@@ -27,7 +27,7 @@ PORT   STATE SERVICE
 
 Let's check the specifics. Add these specific ports to your scan and use script and version scan
 
-```
+```java
 root@ip-10-113-94-131:~# nmap -sC -sV 10.113.170.99 -p21,22 -n -Pn
 
 PORT   STATE SERVICE VERSION
@@ -94,5 +94,73 @@ root@ip-10-113-94-131:~# cat play_me.txt
 more fun during our mission:
 https://youtu.be/6VPn9jYm1QU
 ```
-> Oh, so it's a fun addition to our missions. If you want to, you can 
+> Oh, so it's a fun addition to our missions. If you want to, you can blast it on your headphones :)
+
+Helldivers.jpg? Should I put it in a frame and stare at it all day?!
+
+pho2.png
+
+> Seems fishy.. Why would there be a photo of our fellow comrades?
+
+What do we have next..? Right! The orders!
+```
+root@ip-10-113-94-131:~# cat malevelon_creek_orders.txt 
+
+         ===== Transmission from Super Earth Command =====
+
+      This is mission control. 
+      Helldiver, were you able to extract the sample 
+                                   from the given resource?
+
+    ============================================================
+```
+**Extract** the sample? **Given** resource? The only thing we have is the photo..
+
+Maybe if we *walk* through that *bin*ary photo, the answer might come to us?
+
+```
+root@ip-10-113-94-131:~# binwalk helldivers.jpg 
+
+DECIMAL       HEXADECIMAL     DESCRIPTION
+--------------------------------------------------------------------------------
+0             0x0             JPEG image data, JFIF standard 1.01
+904553        0xDCD69         Zip archive data, at least v2.0 to extract, compressed size: 171, uncompressed size: 238, name: uncommon_sample.txt
+904890        0xDCEBA         End of Zip archive, footer length: 22
+```
+> Zip archive data, huh? Notice the text file name in Zip Description
+
+All we have to do is to **extract** the resource. Just use the command:
+```
+binwalk -e helldivers.jpg --run-as=root
+```
+..and a folder with the sample has been created: `_helldivers.jpg.extracted`
+
+pho3.png
+
+The partial Helldivers communication has been received!<br>
+Ah, so the Helldiver `john` was a participant on `Malevelon Creek`. Also, the order was to **SCAN** the **WHOLE** field. Maybe that's an another clue?
+
+`Uncommon Sample Collected: THM{N0_P4In_NO_FR33D0M}`
+
+---
+
+### Scan the WHOLE field
+
+```
+root@ip-10-113-94-131:~# nmap -sS 10.113.170.99 -p- -n -Pn
+Host is up (0.00011s latency).
+PORT      STATE SERVICE
+21/tcp    open  ftp
+22/tcp    open  ssh
+17800/tcp open  unknown
+```
+what is it
+... smb doesn't work I have to reload the machine
+
+
+### Sources
+- Nmap
+- FTP on Linux
+- Binwalk
+- SMB Client
 
